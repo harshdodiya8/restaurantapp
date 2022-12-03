@@ -21,22 +21,22 @@ const RowContainer = ({ flag, data, scrollValue, setScrollValue }) => {
   }, [scrollValue]);
   // console.log("kl")
   const addToCart = (item) => {
-    // setnoOfItem((prevItem)=>prevItem+1)
-  
-    // console.log("dfg",updated);
-    // console.log(item);
+
     let updatedItem
-   let quantity=updated.find((ele)=>ele.id===item.id)
-   if(quantity){
-   updatedItem= {...item,...{qty:item.qty+1}}
-  console.log("index", updated.indexOf(quantity))
+   let existingItem=updated.find((ele)=>ele.id===item.id)
+
+   if(existingItem){
+  
+   updatedItem= {...item,...{qty:existingItem.qty+1}}
+
   let abc=[...updated]
-abc[updated.indexOf(quantity)]=updatedItem
+abc[updated.indexOf(existingItem)]=updatedItem
+// console.log();
    setUpdated(abc)
    }else{
     setUpdated([...updated,item])
    }
-   
+  
     localStorage.setItem("cartItems", JSON.stringify(item));
   };
   useEffect(() => {
@@ -50,7 +50,7 @@ abc[updated.indexOf(quantity)]=updatedItem
    }
   
     
-  }, [updated.length])
+  }, [updated])
   
 
   return (
