@@ -96,7 +96,10 @@ const CreateContainer = () => {
           qty: 1,
           price: price,
         };
-        await setDoc(doc(db, "foodItems", `${Date.now()}`), data);
+        // if(data.imageUrl===){
+
+        // }
+        // await setDoc(doc(db, "foodItems", `${Date.now()}`), data);
         setIsLoading(false);
         setFields(true);
 
@@ -116,7 +119,7 @@ const CreateContainer = () => {
   };
   const fetchdata = async () => {
     const data = await getAllFoodItems();
-    // console.log(data);
+    console.log(data);
     dispatch({
       type: "FOOD_ITEMS",
       foodItems: data,

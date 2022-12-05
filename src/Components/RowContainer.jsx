@@ -4,13 +4,14 @@ import { motion } from "framer-motion";
 import NotFound from "../img/NotFound.svg";
 import { useDispatch, useSelector } from "react-redux";
 import { immerable } from "immer";
+import useCart from "./useCart";
 
 const RowContainer = ({ flag, data, scrollValue, setScrollValue }) => {
   // console.log(data);
-  const [noOfItem, setnoOfItem] = useState(1)
-  const [updated, setUpdated] = useState([])
+ 
+  // const [updated, setUpdated] = useState([])
   const cart = useSelector((state) => state.authentication.cart);
-  console.log(cart);
+  
 
   const dispatch = useDispatch();
   const rowContainer = useRef();
@@ -20,47 +21,48 @@ const RowContainer = ({ flag, data, scrollValue, setScrollValue }) => {
     // setScrollValue(0);
   }, [scrollValue]);
   // console.log("kl")
-  const addToCart = (item) => {
+  const {addToCart,updated}=useCart()
+  // const addToCart = (item) => {
 
-    let updatedItem
-   let existingItem=updated.find((ele)=>ele.id===item.id)
+  //   let updatedItem
+  //   let existingItem = updated.find((ele) => ele.id === item.id)
 
-   if(existingItem){
-  
-   updatedItem= {...item,...{qty:existingItem.qty+1}}
+  //   if (existingItem) {
 
-  let abc=[...updated]
-abc[updated.indexOf(existingItem)]=updatedItem
-// console.log();
-   setUpdated(abc)
-   }else{
-    setUpdated([...updated,item])
-   }
-  
-    localStorage.setItem("cartItems", JSON.stringify(item));
-  };
+  //     updatedItem = { ...item, ...{ qty: existingItem.qty + 1 } }
+
+  //     let abc = [...updated]
+  //     abc[updated.indexOf(existingItem)] = updatedItem
+  //     // console.log();
+  //     setUpdated(abc)
+  //   } else {
+  //     setUpdated([...updated, item])
+  //   }
+
+  //   localStorage.setItem("cartItems", JSON.stringify(item));
+  // };
   useEffect(() => {
-   if(updated.length){
-    dispatch({
-      type: "ADD_CART",
-      payload: updated,
-      
-      
-    })
-   }
-  
-    
+    if (updated.length) {
+      dispatch({
+        type: "ADD_CART",
+        payload: updated,
+
+
+      })
+      localStorage.getItem("cartItems")
+    }
+
+
   }, [updated])
-  
+
 
   return (
     <div
       ref={rowContainer}
-      className={`w-full flex items-center gap-3  my-12 scroll-smooth  ${
-        flag
+      className={`w-full flex items-center gap-3  my-12 scroll-smooth  ${flag
           ? "overflow-x-scroll scrollbar-none"
           : "overflow-x-hidden flex-wrap justify-center"
-      }`}
+        }`}
     >
       {data && data.length > 0 ? (
         data.map((item) => (
@@ -82,7 +84,7 @@ abc[updated.indexOf(existingItem)]=updatedItem
               <motion.div
                 whileTap={{ scale: 0.75 }}
                 className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center cursor-pointer hover:shadow-md -mt-8"
-                onClick={() => addToCart(item)}
+                onClick={async() => await addToCart(item)}
               >
                 <MdShoppingBasket className="text-white" />
               </motion.div>

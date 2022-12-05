@@ -1,18 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { BiMinus, BiPlus } from "react-icons/bi";
 import { motion } from "framer-motion";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import useCart from "./useCart";
 
 const CartItem = ({ item, setFlag, flag }) => {
-  //   const cart = useSelector((state) => state.authentication.cart);
-  const dispatch = useDispatch();
-  const updateQty = (item) => {
-    dispatch({
-      type: "ADD_CART",
-      payload: item,
-    });
-  };
+    const cart = useSelector((state) => state.authentication.cart);
+  const dispatch = useDispatch()
+  // const{updatedItem}=useCart(item)
+  // const updateQty = () => {
+  //   dispatch({
+  //     type: "ADD_CART",
+  //     payload: updatedItem,
+  //   });
+  // };
+  const {addToCart,updated}=useCart()
+  useEffect(() => {
+    if (updated.length) {
+      dispatch({
+        type: "ADD_CART",
+        payload: updated,
 
+
+      })
+    }
+
+
+  }, [updated])
   console.log(item);
   return (
     <div className="w-full p-1 px-2 rounded-lg bg-cartItem flex items-center gap-2">
@@ -34,7 +48,7 @@ const CartItem = ({ item, setFlag, flag }) => {
       <div className="group flex items-center gap-2 ml-auto cursor-pointer">
         <motion.div
           whileTap={{ scale: 0.75 }}
-          //   onClick={() => updateQty("remove", item?.id)}
+           
         >
           <BiMinus className="text-gray-50 " />
         </motion.div>
@@ -43,8 +57,8 @@ const CartItem = ({ item, setFlag, flag }) => {
           {item.qty}
         </p>
 
-        <motion.div whileTap={{ scale: 0.75 }} onClick={() => updateQty(item)}>
-          <BiPlus className="text-gray-50 " />
+        <motion.div whileTap={{ scale: 0.75 }} >
+          <BiPlus className="text-gray-50 "  onClick={() => addToCart(item)} />
         </motion.div>
       </div>
     </div>

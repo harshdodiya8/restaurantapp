@@ -14,6 +14,9 @@ const Header = () => {
   const [toggle, setToggle] = useState(false);
   const user = useSelector((state) => state.authentication.user);
   const cart = useSelector((state) => state.authentication.cart);
+  let totalPrice = cart.reduce((accumulator, item) => {
+    return accumulator + item.qty * item.price;
+  }, 0);
   console.log(user);
   const dispatch = useDispatch();
   const firebaseAuth = getAuth(app);
@@ -76,7 +79,7 @@ const Header = () => {
               className="text-textColor text-2xl ml-8 cursor-pointer"
               onClick={() => setToggle(true)}
             />
-            {toggle ? <CartContainer setToggle={setToggle} /> : ""}
+            {toggle &&<CartContainer setToggle={setToggle} totalPrice={totalPrice} /> }
             <div className=" absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center">
               <p className="text-xs text-white font-semibold">{cart.length}</p>
             </div>

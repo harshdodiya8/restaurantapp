@@ -1,11 +1,11 @@
 import { RiAspectRatioLine } from "react-icons/ri";
-import { fetchUser } from "../utils/fetchUser";
+import { fetchCart, fetchUser } from "../utils/fetchUser";
 const userInfo = fetchUser();
-
+const cartInfo=fetchCart()
 const initialState = {
   user: userInfo,
   foodItems: null,
-  cart: [],
+  cart:cartInfo,
 };
 export const authentication = (state = initialState, action) => {
   console.log(action);
@@ -69,6 +69,7 @@ export const authentication = (state = initialState, action) => {
       // };
     case "CLEAR_CART":
       return {
+        ...state,
         cart: [],
       };
 

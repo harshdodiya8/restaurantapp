@@ -6,12 +6,14 @@ import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import CartItem from "./CartItem";
 
-const CartContainer = ({ setToggle }) => {
+const CartContainer = ({ setToggle,totalPrice }) => {
+  const cart = useSelector((state) => state.authentication.cart);
+  
   //   const [flag, setFlag] = useState(1);
   const user = useSelector((state) => state.authentication.user);
   const dispatch = useDispatch();
-  const [tot, setTot] = useState(0);
-  const cart = useSelector((state) => state.authentication.cart);
+ 
+  
   // let price = cart.reduce((amount, item) => {
   //   return (amount += parseFloat(item.price) * item.quantity);
   // }, 0);
@@ -22,13 +24,11 @@ const CartContainer = ({ setToggle }) => {
   //     });
   //   };
 
-  useEffect(() => {
-    let totalPrice = cart.reduce((accumulator, item) => {
-      return accumulator + item.qty * item.price;
-    }, 0);
-    setTot(totalPrice);
-    console.log(tot);
-  }, [tot]);
+  // useEffect(() => {
+ 
+  //   setTot(totalPrice);
+  //   console.log(tot);
+  // }, [tot]);
 
   const clearCart = () => {
     dispatch({
@@ -84,7 +84,7 @@ const CartContainer = ({ setToggle }) => {
           <div className="w-full flex-1 bg-cartTotal rounded-t-[2rem] flex flex-col items-center justify-evenly px-8 py-2">
             <div className="w-full flex items-center justify-between">
               <p className="text-gray-400 text-lg">Sub Total</p>
-              <p className="text-gray-400 text-lg">${tot}</p>
+              <p className="text-gray-400 text-lg">${totalPrice}</p>
             </div>
             <div className="w-full flex items-center justify-between">
               <p className="text-gray-400 text-lg">Delivery</p>
@@ -96,7 +96,7 @@ const CartContainer = ({ setToggle }) => {
             <div className="w-full flex items-center justify-between">
               <p className="text-gray-200 text-xl font-semibold">Total</p>
               <p className="text-gray-200 text-xl font-semibold">
-                ${tot + 2.5}
+                ${totalPrice + 2.5}
               </p>
             </div>
 
