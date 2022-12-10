@@ -3,15 +3,13 @@ import { MdShoppingBasket } from "react-icons/md";
 import { motion } from "framer-motion";
 import NotFound from "../img/NotFound.svg";
 import { useDispatch, useSelector } from "react-redux";
-import { immerable } from "immer";
 import useCart from "./useCart";
 
 const RowContainer = ({ flag, data, scrollValue, setScrollValue }) => {
   // console.log(data);
- 
+
   // const [updated, setUpdated] = useState([])
   const cart = useSelector((state) => state.authentication.cart);
-  
 
   const dispatch = useDispatch();
   const rowContainer = useRef();
@@ -21,7 +19,7 @@ const RowContainer = ({ flag, data, scrollValue, setScrollValue }) => {
     // setScrollValue(0);
   }, [scrollValue]);
   // console.log("kl")
-  const {addToCart,updated}=useCart()
+  const { addToCart, updated, uniqueid } = useCart();
   // const addToCart = (item) => {
 
   //   let updatedItem
@@ -46,23 +44,19 @@ const RowContainer = ({ flag, data, scrollValue, setScrollValue }) => {
       dispatch({
         type: "ADD_CART",
         payload: updated,
-
-
-      })
-      localStorage.getItem("cartItems")
+      });
     }
-
-
-  }, [updated])
-
+    localStorage.setItem("cartItems", JSON.stringify(updated));
+  }, [updated]);
 
   return (
     <div
       ref={rowContainer}
-      className={`w-full flex items-center gap-3  my-12 scroll-smooth  ${flag
+      className={`w-full flex items-center gap-3  my-12 scroll-smooth  ${
+        flag
           ? "overflow-x-scroll scrollbar-none"
           : "overflow-x-hidden flex-wrap justify-center"
-        }`}
+      }`}
     >
       {data && data.length > 0 ? (
         data.map((item) => (
@@ -84,7 +78,7 @@ const RowContainer = ({ flag, data, scrollValue, setScrollValue }) => {
               <motion.div
                 whileTap={{ scale: 0.75 }}
                 className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center cursor-pointer hover:shadow-md -mt-8"
-                onClick={async() => await addToCart(item)}
+                onClick={() => addToCart(item)}
               >
                 <MdShoppingBasket className="text-white" />
               </motion.div>

@@ -4,30 +4,53 @@ import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import useCart from "./useCart";
 
-const CartItem = ({ item, setFlag, flag }) => {
-    const cart = useSelector((state) => state.authentication.cart);
-  const dispatch = useDispatch()
-  // const{updatedItem}=useCart(item)
-  // const updateQty = () => {
-  //   dispatch({
-  //     type: "ADD_CART",
-  //     payload: updatedItem,
-  //   });
-  // };
-  const {addToCart,updated}=useCart()
+const CartItem = ({ item, setToggle, flag }) => {
+  const cart = useSelector((state) => state.authentication.cart);
+  const dispatch = useDispatch();
+  const [updatedqty, setupdatedqty] = useState([]);
+
+  const { addToCart, updated } = useCart();
   useEffect(() => {
     if (updated.length) {
       dispatch({
         type: "ADD_CART",
         payload: updated,
+      });
+    }
+    localStorage.setItem("cartItems", JSON.stringify(updated));
+    // console.log("updated", updated);
+  }, [updated]);
 
-
-      })
+  const deleteQty = (item) => {
+    let existing = cart.find((ele) => ele.id === item.id);
+    if (existing.qty > 1) {
+      let updatedQty = { ...item, ...{ qty: existing.qty - 1 } };
+      let decrement = [...cart];
+      decrement[cart.indexOf(existing)] = updatedQty;
+      setupdatedqty(decrement);
+      console.log("cart", cart);
+    } else if (existing.qty === 1) {
+      // alert("sdjhh");
+      if (cart.length === 1) {
+        dispatch({
+          type: "CLEAR_CART",
+          cart: [],
+        });
+      }
+      let updatedCart = cart.filter((curItem) => curItem.id !== item.id);
+      setupdatedqty(updatedCart);
     }
 
-
-  }, [updated])
-  console.log(item);
+    // localStorage.setItem("cartItems", JSON.stringify(updatedqty));
+  };
+  useEffect(() => {
+    if (updatedqty.length) {
+      dispatch({
+        type: "DELETE",
+        payload: updatedqty,
+      });
+    }
+  }, [updatedqty]);
   return (
     <div className="w-full p-1 px-2 rounded-lg bg-cartItem flex items-center gap-2">
       <img
@@ -40,16 +63,13 @@ const CartItem = ({ item, setFlag, flag }) => {
       <div className="flex flex-col gap-2">
         <p className="text-base text-gray-50">{item?.title}</p>
         <p className="text-sm block text-gray-300 font-semibold">
-          $ {parseFloat(item?.price)}
+          $ {item?.price}
         </p>
       </div>
 
       {/* button section */}
       <div className="group flex items-center gap-2 ml-auto cursor-pointer">
-        <motion.div
-          whileTap={{ scale: 0.75 }}
-           
-        >
+        <motion.div whileTap={{ scale: 0.75 }} onClick={() => deleteQty(item)}>
           <BiMinus className="text-gray-50 " />
         </motion.div>
 
@@ -57,8 +77,11 @@ const CartItem = ({ item, setFlag, flag }) => {
           {item.qty}
         </p>
 
-        <motion.div whileTap={{ scale: 0.75 }} >
-          <BiPlus className="text-gray-50 "  onClick={() => addToCart(item)} />
+        <motion.div whileTap={{ scale: 0.75 }}>
+          <BiPlus
+            className="text-gray-50 "
+            onClick={async () => await addToCart(item)}
+          />
         </motion.div>
       </div>
     </div>

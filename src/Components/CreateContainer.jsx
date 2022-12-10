@@ -33,6 +33,8 @@ const CreateContainer = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // console.log(foodItems);
+  const foodItems = useSelector((state) => state.authentication.foodItems);
+
   const dispatch = useDispatch();
 
   const uploadImage = (e) => {
@@ -81,7 +83,7 @@ const CreateContainer = () => {
       console.log("jdkj");
       if (!title || !calories || !imageAsset || !price || !category) {
         setIsLoading(false);
-        console.log("danger");
+
         setAlertStatus("danger");
         setFields(true);
 
@@ -99,17 +101,29 @@ const CreateContainer = () => {
         // if(data.imageUrl===){
 
         // }
-        // await setDoc(doc(db, "foodItems", `${Date.now()}`), data);
-        setIsLoading(false);
-        setFields(true);
+        let existingfoodItem = foodItems.find(
+          (ele) => ele.title === data.title
+        );
+        console.log(existingfoodItem);
+        if (existingfoodItem) {
+          setAlertStatus("danger");
+          setMsg("Already");
+          setIsLoading(false);
+        } else {
+          await setDoc(doc(db, "foodItems", `${Date.now()}`), data, {
+            merge: true,
+          });
+          setIsLoading(false);
+          setFields(true);
 
-        setCalories("");
-        setTimeout(() => {
-          setFields(false);
-        }, 2000);
-        setMsg("data Added Succesfully");
-        setAlertStatus("succes");
-        clearData();
+          setCalories("");
+          setTimeout(() => {
+            setFields(false);
+          }, 2000);
+          setMsg("data Added Succesfully");
+          setAlertStatus("succes");
+          clearData();
+        }
       }
     } catch (error) {
       console.log(error);
@@ -119,7 +133,7 @@ const CreateContainer = () => {
   };
   const fetchdata = async () => {
     const data = await getAllFoodItems();
-    console.log(data);
+
     dispatch({
       type: "FOOD_ITEMS",
       foodItems: data,

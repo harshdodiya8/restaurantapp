@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 function App() {
   // const foodItems = useSelector((state) => state.authentication.foodItems);
   const user = useSelector((state) => state.authentication.user);
-  console.log(user);
+  // console.log(user.uuid);
   const dispatch = useDispatch();
   const fetchData = async () => {
     const data = await getAllFoodItems();
@@ -19,7 +19,7 @@ function App() {
       type: "FOOD_ITEMS",
       foodItems: data,
     });
-    console.log(data);
+    // console.log(data);
   };
   useEffect(() => {
     fetchData();

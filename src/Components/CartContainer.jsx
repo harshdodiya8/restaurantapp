@@ -5,30 +5,15 @@ import EmptyCart from "../img/emptyCart.svg";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import CartItem from "./CartItem";
+import { getAllCartItems } from "../utils/firebasefunction";
+import { auth } from "../firebase.config";
 
-const CartContainer = ({ setToggle,totalPrice }) => {
+const CartContainer = ({ setToggle, totalPrice }) => {
   const cart = useSelector((state) => state.authentication.cart);
-  
+
   //   const [flag, setFlag] = useState(1);
   const user = useSelector((state) => state.authentication.user);
   const dispatch = useDispatch();
- 
-  
-  // let price = cart.reduce((amount, item) => {
-  //   return (amount += parseFloat(item.price) * item.quantity);
-  // }, 0);
-  //   const showCart = () => {
-  //     dispatch({
-  //       type: actionType.SET_CART_SHOW,
-  //       cartShow: !cartShow,
-  //     });
-  //   };
-
-  // useEffect(() => {
- 
-  //   setTot(totalPrice);
-  //   console.log(tot);
-  // }, [tot]);
 
   const clearCart = () => {
     dispatch({
@@ -74,6 +59,7 @@ const CartContainer = ({ setToggle,totalPrice }) => {
                 <CartItem
                   key={item.id}
                   item={item}
+                  setToggle={setToggle}
                   // setFlag={setFlag}
                   // flag={flag}
                 />

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Logo from "../img/logo.png";
 import { MdShoppingBasket, MdAdd, MdLogout } from "react-icons/md";
 import Avatar from "../img/avatar.png";
@@ -12,11 +12,18 @@ import CartContainer from "./CartContainer";
 const Header = () => {
   const [isMenu, setisMenu] = useState(false);
   const [toggle, setToggle] = useState(false);
+  const [totalPrice, setTotalPrice] = useState("");
   const user = useSelector((state) => state.authentication.user);
   const cart = useSelector((state) => state.authentication.cart);
-  let totalPrice = cart.reduce((accumulator, item) => {
-    return accumulator + item.qty * item.price;
-  }, 0);
+  console.log("cart", cart);
+  useEffect(() => {
+    let totalPrice = cart.reduce((accumulator, item) => {
+      return accumulator + item.qty * item.price;
+    }, 0);
+    setTotalPrice(totalPrice);
+    console.log(totalPrice);
+  }, [cart]);
+  // let totalPrie = 12;
   console.log(user);
   const dispatch = useDispatch();
   const firebaseAuth = getAuth(app);
@@ -24,15 +31,17 @@ const Header = () => {
   const login = async () => {
     if (!user) {
       const {
-        user: { refreshToken, providerData },
+        user: { refreshToken, providerData, uid },
       } = await signInWithPopup(firebaseAuth, provider);
       // console.log(response);
       console.log("dds");
       dispatch({
         type: "LOGIN_USERS",
-        user: providerData[0],
+        user: { ...providerData[0], uid },
       });
-      localStorage.setItem("user", JSON.stringify(providerData[0]));
+
+      localStorage.setItem("user", JSON.stringify({ ...providerData[0], uid }));
+      // localStorage.setItem("uniqueid", JSON.stringify(uid));
     } else {
       setisMenu(true);
     }
@@ -44,6 +53,12 @@ const Header = () => {
       type: "LOGIN_USERS",
       user: null,
     });
+    if (!user)
+      dispatch({
+        type: "CLEAR_CART",
+        cart: [],
+      });
+    // localStorage.clear()
   };
   return (
     <div className="fixed z-50 w-screen  p-6 px-16">
@@ -79,7 +94,9 @@ const Header = () => {
               className="text-textColor text-2xl ml-8 cursor-pointer"
               onClick={() => setToggle(true)}
             />
-            {toggle &&<CartContainer setToggle={setToggle} totalPrice={totalPrice} /> }
+            {toggle && user && (
+              <CartContainer setToggle={setToggle} totalPrice={totalPrice} />
+            )}
             <div className=" absolute -top-2 -right-2 w-5 h-5 rounded-full bg-cartNumBg flex items-center justify-center">
               <p className="text-xs text-white font-semibold">{cart.length}</p>
             </div>
