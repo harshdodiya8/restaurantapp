@@ -20,7 +20,7 @@ const CartContainer = ({ setToggle, totalPrice }) => {
       type: "CLEAR_CART",
       cart: [],
     });
-
+    console.log("dfadfdf");
     localStorage.setItem("cartItems", JSON.stringify([]));
   };
   return (
