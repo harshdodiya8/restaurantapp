@@ -5,6 +5,7 @@ const userInfo = fetchUser();
 // const userid = fetchId();
 const initialState = {
   user: userInfo,
+  carr:0,
   // uniqueid: userid,
   foodItems: null,
   cart: [],
